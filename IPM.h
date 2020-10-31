@@ -11,8 +11,7 @@
 class IPM
 {
 public:	
-	IPM( const cv::Size& _origSize, const cv::Size& _dstSize, 
-		const std::vector<cv::Point2f>& _origPoints, const std::vector<cv::Point2f>& _dstPoints );		
+	IPM( const cv::Size& _originalSize, const cv::Size& _destinationSize, const std::vector<cv::Point2f>& _originalPoints, const std::vector<cv::Point2f>& _destinationPoints );		
 	
 	// Apply IPM on points
 	cv::Point2d applyHomography(const cv::Point2d& _point, const cv::Mat& _H);

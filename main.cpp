@@ -38,29 +38,21 @@ int main( int _argc, char** _argv )
 	cout << "Input video: (" << width << "x" << height << ") at " << fps << ", fourcc = " << fourcc << endl;
 	
 	// The 4-points at the input image	
-	vector<Point2f> origPoints;
-	origPoints.push_back( Point2f(0, height) );
-	origPoints.push_back( Point2f(width, height) );
-	origPoints.push_back( Point2f(width/2+30, 270) );
-	origPoints.push_back( Point2f(width/2-50, 270) );
-	// origPoints.push_back( Point2f(width, 240) );
-	// origPoints.push_back( Point2f(0, 240) );
+	vector<Point2f> originalPoints;
+	originalPoints.push_back( Point2f(0, height) );
+	originalPoints.push_back( Point2f(width, height) );
+	originalPoints.push_back( Point2f(width/2+30, 270) );
+	originalPoints.push_back( Point2f(width/2-50, 270) );
 
 	// The 4-points correspondences in the destination image
-	vector<Point2f> dstPoints;
-	// dstPoints.push_back( Point2f(0, height) );
-	// dstPoints.push_back( Point2f(width, height) );
-	// dstPoints.push_back( Point2f(width, 0) );
-	// dstPoints.push_back( Point2f(0, 0) );
-	dstPoints.push_back( Point2f(width/2-100, height) );
-	dstPoints.push_back( Point2f(width/2+70, height) );
-	dstPoints.push_back( Point2f(width/2+30, 270) );
-	dstPoints.push_back( Point2f(width/2-50, 270) );
-	// dstPoints.push_back( Point2f(width, 240) );
-	// dstPoints.push_back( Point2f(0, 240) );
+	vector<Point2f> destinationPoints;
+	destinationPoints.push_back( Point2f(width/2-100, height) );
+	destinationPoints.push_back( Point2f(width/2+70, height) );
+	destinationPoints.push_back( Point2f(width/2+30, 270) );
+	destinationPoints.push_back( Point2f(width/2-50, 270) );
 		
 	// IPM object
-	IPM ipm( Size(width, height), Size(width, height), origPoints, dstPoints );
+	IPM ipm( Size(width, height), Size(width, height), originalPoints, destinationPoints );
 	
 	// Main loop
 	int frameNum = 0;
@@ -82,12 +74,8 @@ int main( int _argc, char** _argv )
 			 inputImg.copyTo(inputImgGray);			 		 
 
 		 // Process
-		 clock_t begin = clock();
 		 ipm.applyHomography( inputImg, outputImg );		 
-		 clock_t end = clock();
-		 double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-		 // printf("%.2f (ms)\r", 1000*elapsed_secs);
-		 ipm.drawPoints(origPoints, inputImg );
+		 ipm.drawPoints(originalPoints, inputImg );
 
 		 // View		
 		 imshow("Input", inputImg);

@@ -4,8 +4,8 @@ using namespace cv;
 using namespace std;
 
 // Public
-IPM::IPM( const cv::Size& _origSize, const cv::Size& _dstSize, const std::vector<cv::Point2f>& _origPoints, const std::vector<cv::Point2f>& _dstPoints )
-	: m_origSize(_origSize), m_dstSize(_dstSize), m_origPoints(_origPoints), m_dstPoints(_dstPoints)
+IPM::IPM( const cv::Size& _originalSize, const cv::Size& _destinationSize, const std::vector<cv::Point2f>& _originalPoints, const std::vector<cv::Point2f>& _destinationPoints )
+	: m_origSize(_originalSize), m_dstSize(_destinationSize), m_origPoints(_originalPoints), m_dstPoints(_destinationPoints)
 {
 	assert( m_origPoints.size() == 4 && m_dstPoints.size() == 4 && "Orig. points and Dst. points must vectors of 4 points" );
 	m_H = getPerspectiveTransform( m_origPoints, m_dstPoints );
@@ -13,19 +13,19 @@ IPM::IPM( const cv::Size& _origSize, const cv::Size& _dstSize, const std::vector
 		
 	createMaps();	
 }
-void IPM::drawPoints( const std::vector<cv::Point2f>& _points, cv::Mat& _img ) const
+void IPM::drawPoints( const std::vector<cv::Point2f>& _points, cv::Mat& _image ) const
 {
 	assert(_points.size() == 4);
 
-	line(_img, Point(static_cast<int>(_points[0].x), static_cast<int>(_points[0].y)), Point(static_cast<int>(_points[3].x), static_cast<int>(_points[3].y)), CV_RGB( 255,0,0), 2);
-	line(_img, Point(static_cast<int>(_points[2].x), static_cast<int>(_points[2].y)), Point(static_cast<int>(_points[3].x), static_cast<int>(_points[3].y)), CV_RGB( 255,0,0), 2);
-	line(_img, Point(static_cast<int>(_points[0].x), static_cast<int>(_points[0].y)), Point(static_cast<int>(_points[1].x), static_cast<int>(_points[1].y)), CV_RGB( 255,0,0), 2);
-	line(_img, Point(static_cast<int>(_points[2].x), static_cast<int>(_points[2].y)), Point(static_cast<int>(_points[1].x), static_cast<int>(_points[1].y)), CV_RGB( 255,0,0), 2);
+	line(_image, Point(static_cast<int>(_points[0].x), static_cast<int>(_points[0].y)), Point(static_cast<int>(_points[3].x), static_cast<int>(_points[3].y)), CV_RGB( 255,0,0), 2);
+	line(_image, Point(static_cast<int>(_points[2].x), static_cast<int>(_points[2].y)), Point(static_cast<int>(_points[3].x), static_cast<int>(_points[3].y)), CV_RGB( 255,0,0), 2);
+	line(_image, Point(static_cast<int>(_points[0].x), static_cast<int>(_points[0].y)), Point(static_cast<int>(_points[1].x), static_cast<int>(_points[1].y)), CV_RGB( 255,0,0), 2);
+	line(_image, Point(static_cast<int>(_points[2].x), static_cast<int>(_points[2].y)), Point(static_cast<int>(_points[1].x), static_cast<int>(_points[1].y)), CV_RGB( 255,0,0), 2);
 	
 	for(size_t i=0; i<_points.size(); i++)
 	{
-		circle(_img, Point(static_cast<int>(_points[i].x), static_cast<int>(_points[i].y)), 2, CV_RGB(255,0,0), -1);
-		circle(_img, Point(static_cast<int>(_points[i].x), static_cast<int>(_points[i].y)), 5, CV_RGB(255,255,255), 2);
+		circle(_image, Point(static_cast<int>(_points[i].x), static_cast<int>(_points[i].y)), 2, CV_RGB(255,0,0), -1);
+		circle(_image, Point(static_cast<int>(_points[i].x), static_cast<int>(_points[i].y)), 5, CV_RGB(255,255,255), 2);
 	}
 }
 void IPM::getPoints(vector<Point2f>& _origPts, vector<Point2f>& _ipmPts)
@@ -33,15 +33,15 @@ void IPM::getPoints(vector<Point2f>& _origPts, vector<Point2f>& _ipmPts)
 	_origPts = m_origPoints;
 	_ipmPts = m_dstPoints;
 }
-void IPM::applyHomography(const Mat& _inputImg, Mat& _dstImg, int _borderMode)
+void IPM::applyHomography(const Mat& _inputImg, Mat& _destinationImage, int _borderMode)
 {
 	// Generate IPM image from src
-	remap(_inputImg, _dstImg, m_mapX, m_mapY, INTER_LINEAR, _borderMode);//, BORDER_CONSTANT, Scalar(0,0,0,0));
+	remap(_inputImg, _destinationImage, m_mapX, m_mapY, INTER_LINEAR, _borderMode);//, BORDER_CONSTANT, Scalar(0,0,0,0));
 }
-void IPM::applyHomographyInv(const Mat& _inputImg, Mat& _dstImg, int _borderMode)
+void IPM::applyHomographyInv(const Mat& _inputImg, Mat& _destinationImage, int _borderMode)
 {
 	// Generate IPM image from src
-	remap(_inputImg, _dstImg, m_mapX, m_mapY, INTER_LINEAR, _borderMode);//, BORDER_CONSTANT, Scalar(0,0,0,0));
+	remap(_inputImg, _destinationImage, m_mapX, m_mapY, INTER_LINEAR, _borderMode);//, BORDER_CONSTANT, Scalar(0,0,0,0));
 }
 Point2d IPM::applyHomography( const Point2d& _point )
 {
